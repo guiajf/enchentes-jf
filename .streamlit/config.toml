@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+
+[project]
+name = "enchentes-jf"
+version = "1.0.0"
+dependencies = [
+    "streamlit==1.28.0",
+    "yfinance==0.2.36",
+    "pandas==2.1.4",
+    "numpy==1.26.4",
+    "plotly==5.18.0",
+    "bcb==1.1.0",
+]
