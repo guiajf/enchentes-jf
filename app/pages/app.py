@@ -30,7 +30,7 @@ except ImportError:
 
 # Configuração da página
 st.set_page_config(
-    page_title="Dashboard Enchentes Juiz de Fora - Atualização em Tempo Real",
+    page_title="Dashboard Enchentes Juiz de Fora - Atualização em tempo real",
     page_icon="🌊",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -465,13 +465,13 @@ def display_news_feed(noticias):
 def main():
     # Header
     st.markdown('<h1 class="main-header">🌊 DASHBOARD ENCHENTES JUIZ DE FORA</h1>', unsafe_allow_html=True)
-    st.markdown('<p class="sub-header">Monitoramento em Tempo Real - Dados Atualizados Automaticamente</p>', unsafe_allow_html=True)
+    st.markdown('<p class="sub-header">Monitoramento em tempo real - dados atualizados automaticamente</p>', unsafe_allow_html=True)
     
     # Aviso se estiver em modo demo
     if not BS4_AVAILABLE:
         st.markdown("""
         <div class="demo-mode">
-            <strong>⚠️ Modo de Demonstração Ativo</strong><br>
+            <strong>⚠️ Modo de demonstração ativo</strong><br>
             Algumas funcionalidades de web scraping estão desativadas. 
             Para funcionalidade completa, instale: <code>pip install beautifulsoup4 lxml</code>
         </div>
@@ -496,13 +496,13 @@ def main():
     st.divider()
     
     # Tabs
-    tab1, tab2, tab3 = st.tabs(["📰 Notícias", "🗺️ Bairros Afetados", "🌦️ Meteorologia"])
+    tab1, tab2, tab3 = st.tabs(["📰 Notícias", "🗺️ Bairros afetados", "🌦️ Meteorologia"])
     
     with tab1:
         display_news_feed(data["noticias"])
     
     with tab2:
-        st.subheader("Bairros com Ocorrências Confirmadas")
+        st.subheader("Bairros com ocorrências confirmadas")
         df_bairros = pd.DataFrame([
             {"Bairro": b, "Tipo": d["tipo"], "Gravidade": d["gravidade"], 
              "Status": d["status"], "Vítimas": d.get("vítimas", 0)}
@@ -526,7 +526,7 @@ def main():
             st.warning("Dados meteorológicos temporariamente indisponíveis")
         
         # Gráfico histórico
-        st.subheader("Histórico de Precipitação - Fevereiro 2026")
+        st.subheader("Histórico de precipitação - Fevereiro 2026")
         dias = list(range(20, 26))
         chuva = [15, 45, 89, 138.6, 45, 12]
         df_chuva = pd.DataFrame({"Dia": [f"{d}/02" for d in dias], "mm": chuva})
