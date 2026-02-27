@@ -542,6 +542,29 @@ def main():
                 st.info(f"🌧️ Previsão para amanhã: {weather['previsao_amanha']}mm de precipitação")
         else:
             st.warning("Dados meteorológicos temporariamente indisponíveis")
+
+    with tab4:
+        st.markdown("""
+        ### ℹ️ Sobre o Dashboard
+        
+        **Fontes de Dados em Tempo Real:**
+        - 🏛️ **Defesa Civil MG**: Boletins oficiais
+        - 📺 **G1 Zona da Mata**: Notícias locais
+        - 📡 **CNN Brasil**: Cobertura nacional
+        - 📰 **RSS Feeds**: Agregadores de notícias
+        - 🌦️ **Open-Meteo**: Dados meteorológicos
+        
+        **Atualização:**
+        - Dados atualizados automaticamente a cada 5 minutos
+        - Cache local para otimização de performance
+        - Extração automática de métricas usando NLP
+        
+        **Tecnologias:**
+        - Streamlit para interface
+        - BeautifulSoup para scraping
+        - Feedparser para RSS
+        - Regex/NLP para extração de dados
+        """)
         
         # Gráfico histórico
         st.subheader("Histórico de precipitação - Fevereiro 2026")
