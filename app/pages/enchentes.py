@@ -514,7 +514,7 @@ def main():
     st.divider()
     
     # Tabs
-    tab1, tab2, tab3 = st.tabs(["📰 Notícias", "🗺️ Bairros afetados", "🌦️ Meteorologia"])
+    tab1, tab2, tab3, tab4 = st.tabs(["📰 Notícias", "🗺️ Bairros afetados", "🌦️ Meteorologia", "ℹ️ Sobre"])
     
     with tab1:
         display_news_feed(data["noticias"])
