@@ -543,6 +543,14 @@ def main():
         else:
             st.warning("Dados meteorológicos temporariamente indisponíveis")
 
+        # Gráfico histórico
+        st.subheader("Histórico de precipitação - Fevereiro 2026")
+        dias = list(range(20, 26))
+        chuva = [15, 45, 89, 138.6, 45, 12]
+        df_chuva = pd.DataFrame({"Dia": [f"{d}/02" for d in dias], "mm": chuva})
+        st.bar_chart(df_chuva.set_index("Dia"), color="#3b82f6")
+        st.caption("Fonte: INMET/CEMADEN - Dados até 24/02/2026")
+
     with tab4:
         st.markdown("""
         ### ℹ️ Sobre o Dashboard
@@ -566,13 +574,5 @@ def main():
         - Regex/NLP para extração de dados
         """)
         
-        # Gráfico histórico
-        st.subheader("Histórico de precipitação - Fevereiro 2026")
-        dias = list(range(20, 26))
-        chuva = [15, 45, 89, 138.6, 45, 12]
-        df_chuva = pd.DataFrame({"Dia": [f"{d}/02" for d in dias], "mm": chuva})
-        st.bar_chart(df_chuva.set_index("Dia"), color="#3b82f6")
-        st.caption("Fonte: INMET/CEMADEN - Dados até 24/02/2026")
-
 if __name__ == "__main__":
     main()
