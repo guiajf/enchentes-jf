@@ -97,7 +97,7 @@ class DataManager:
                 "titulo": "Balanço atualizado: 46 óbitos confirmados em Juiz de Fora",
                 "resumo": "Equipes continuam buscas por 21 desaparecidos. Mais de 3.400 pessoas estão desabrigadas.",
                 "tipo": "Boletim Oficial",
-                "url": "#"
+                "url": "https://www.defesacivil.mg.gov.br/noticias"
             },
             {
                 "fonte": "G1 Zona da Mata",
@@ -122,14 +122,6 @@ class DataManager:
                 "resumo": "Já são 589,6mm de chuva acumulada, superando em 270% a média histórica.",
                 "tipo": "Comunicado",
                 "url": "https://www.pjf.mg.gov.br"
-            },
-            {
-                "fonte": "Corpo de Bombeiros MG",
-                "horario": "24/02 15:30",
-                "titulo": "Resgates continuam em áreas de difícil acesso",
-                "resumo": "Cães farejadores e drones auxiliam nas buscas por desaparecidos.",
-                "tipo": "Operacional",
-                "url": "#"
             }
         ]
 
