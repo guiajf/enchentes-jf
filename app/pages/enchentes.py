@@ -146,40 +146,47 @@ def scrape_defesa_civil():
     
     try:
         urls = [
-            "https://www.defesacivil.mg.gov.br/",
-            "https://www.pjf.mg.gov.br/defesa_civil/noticias.php"
+            {"url": "https://www.defesacivil.mg.gov.br/", "nome": "Defesa Civil MG"},
+            {"url": "https://www.pjf.mg.gov.br/defesa_civil/noticias.php", "nome": "Defesa Civil JF"}
         ]
         
         noticias = []
-        for url in urls:
+        for fonte in urls:
             try:
-                response = requests.get(url, timeout=10, headers={
+                response = requests.get(fonte["url"], timeout=10, headers={
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
                 })
                 soup = BeautifulSoup(response.content, 'html.parser')
                 
-                keywords = ['ench', 'chuv', 'desliz', 'alag', 'temporal', 'defesa civil', 'juiz de fora']
-                articles = soup.find_all(['article', 'div', 'section'], limit=10)
+                keywords = ['ench', 'chuv', 'desliz', 'alag', 'temporal', 'juiz de fora']
                 
-                for article in articles:
-                    texto = article.get_text()
-                    if any(k in texto.lower() for k in keywords):
-                        titulo = texto.strip()[:100]
-                        if len(titulo) > 20:  # Evitar textos muito curtos
-                            noticias.append({
-                                "fonte": "Defesa Civil (Web)",
-                                "titulo": titulo + "...",
-                                "horario": datetime.now().strftime("%d/%m %H:%M"),
-                                "resumo": "Informação extraída do site oficial",
-                                "tipo": "Boletim",
-                                "url": url
-                            })
+                # Tentar encontrar links de notícias
+                links = soup.find_all('a', href=True, limit=15)
+                
+                for link in links:
+                    texto = link.get_text()
+                    href = link['href']
+                    
+                    # Completar URL relativa
+                    if href.startswith('/'):
+                        href = fonte["url"].rstrip('/') + href
+                    elif not href.startswith(('http://', 'https://')):
+                        continue
+                    
+                    if any(k in texto.lower() for k in keywords) and len(texto.strip()) > 20:
+                        noticias.append({
+                            "fonte": fonte["nome"],
+                            "titulo": texto.strip()[:100] + "...",
+                            "horario": datetime.now().strftime("%d/%m %H:%M"),
+                            "resumo": f"Notícia publicada no site da {fonte['nome']}",
+                            "tipo": "Boletim",
+                            "url": href
+                        })
             except Exception as e:
                 continue
                 
         return noticias
     except Exception as e:
-        st.error(f"Erro no scraping: {e}")
         return []
 
 def parse_rss_feeds():
@@ -435,33 +442,52 @@ def display_realtime_metrics(data):
         """, unsafe_allow_html=True)
 
 def display_news_feed(noticias):
-    """Feed de notícias"""
+    """Feed de notícias com links funcionando"""
     st.subheader(f"📰 Central de Notícias ({len(noticias)} atualizações)")
     
-    for noticia in noticias[:10]:
+    for i, noticia in enumerate(noticias[:10]):
+        # Garantir que todos os campos existam
+        fonte = noticia.get("fonte", "Fonte desconhecida")
+        horario = noticia.get("horario", datetime.now().strftime("%d/%m %H:%M"))
+        titulo = noticia.get("titulo", "Sem título")
+        resumo = noticia.get("resumo", "Clique no link para ler a matéria completa")
+        url = noticia.get("url", "")
+        
+        # Cor da fonte baseada no nome
         cor_fonte = {
             "Defesa Civil MG": "#dc2626",
             "Defesa Civil (Web)": "#dc2626",
             "G1 Zona da Mata": "#c4170c",
             "CNN Brasil": "#cc0000",
-            "NewsAPI": "#2563eb"
-        }.get(noticia.get("fonte"), "#6b7280")
+            "NewsAPI": "#2563eb",
+            "Prefeitura JF": "#059669",
+            "Corpo de Bombeiros MG": "#d97706",
+            "RSS": "#6b7280"
+        }.get(fonte, "#6b7280")
+        
+        # Construir o link apenas se for válido
+        link_html = ""
+        if url and url != "#" and url.startswith(("http://", "https://")):
+            link_html = f'<a href="{url}" target="_blank" style="color: #2563eb; font-size: 0.875rem; margin-top: 0.5rem; display: inline-block;">🔗 Ler matéria completa →</a>'
+        elif fonte == "Defesa Civil (Web)":
+            # Se veio de scraping mas sem link específico, usar link da fonte
+            link_html = f'<span style="color: #6b7280; font-size: 0.875rem;">ℹ️ Fonte: {fonte}</span>'
         
         st.markdown(f"""
         <div class="news-card" style="border-left: 4px solid {cor_fonte};">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
                 <span style="background-color: {cor_fonte}; color: white; padding: 0.25rem 0.5rem; 
                              border-radius: 0.25rem; font-size: 0.75rem; font-weight: bold;">
-                    {noticia.get("fonte", "Fonte")}
+                    {fonte}
                 </span>
-                <span style="color: #6b7280; font-size: 0.875rem;">{noticia.get("horario", "Agora")}</span>
+                <span style="color: #6b7280; font-size: 0.875rem;">{horario}</span>
             </div>
-            <h4 style="margin: 0.5rem 0; color: #111827;">{noticia.get("titulo", "Sem título")}</h4>
-            <p style="margin: 0; color: #4b5563; line-height: 1.5;">{noticia.get("resumo", "")}</p>
-            {f'<a href="{noticia.get("url", "#")}" target="_blank" style="color: #2563eb; font-size: 0.875rem;">🔗 Ler mais</a>' if noticia.get("url") and noticia.get("url") != "#" else ''}
+            <h4 style="margin: 0.5rem 0; color: #111827;">{titulo}</h4>
+            <p style="margin: 0; color: #4b5563; line-height: 1.5;">{resumo}</p>
+            {link_html}
         </div>
         """, unsafe_allow_html=True)
-
+        
 def main():
     # Header
     st.markdown('<h1 class="main-header">🌊 DASHBOARD ENCHENTES JUIZ DE FORA</h1>', unsafe_allow_html=True)
